@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #include "dynamixel_workbench_controllers/position_control.h"
 
@@ -35,7 +35,7 @@ PositionControl::PositionControl()
   
   if (dxl_wb_->scan(dxl_id_, &dxl_cnt_, scan_range) != true)
   {
-    ROS_ERROR("Not found Motors, Please check scan range or baud rate");
+    ROS_ERROR("Not found Motors, Please check scan range and baud rate");
     ros::shutdown();
     return;
   }
@@ -45,10 +45,7 @@ PositionControl::PositionControl()
   for (int index = 0; index < dxl_cnt_; index++)
     dxl_wb_->jointMode(dxl_id_[index], profile_velocity, profile_acceleration);
 
-  dxl_wb_->addSyncWrite("Goal_Position");
-
   initPublisher();
-  initSubscriber();
   initServer();
 }
 
@@ -79,12 +76,6 @@ void PositionControl::initMsg()
 void PositionControl::initPublisher()
 {
   dynamixel_state_list_pub_ = node_handle_.advertise<dynamixel_workbench_msgs::DynamixelStateList>("dynamixel_state", 10);
-  joint_states_pub_ = node_handle_.advertise<sensor_msgs::JointState>("joint_states", 10);
-}
-
-void PositionControl::initSubscriber()
-{
-  joint_command_sub_ = node_handle_.subscribe("goal_dynamixel_position", 10, &PositionControl::goalJointPositionCallback, this);
 }
 
 void PositionControl::initServer()
@@ -113,38 +104,9 @@ void PositionControl::dynamixelStatePublish()
   dynamixel_state_list_pub_.publish(dynamixel_state_list);
 }
 
-void PositionControl::jointStatePublish()
-{
-  int32_t present_position[dxl_cnt_] = {0, };
-
-  for (int index = 0; index < dxl_cnt_; index++)
-    present_position[index] = dxl_wb_->itemRead(dxl_id_[index], "Present_Position");
-
-  int32_t present_velocity[dxl_cnt_] = {0, };
-
-  for (int index = 0; index < dxl_cnt_; index++)
-    present_velocity[index] = dxl_wb_->itemRead(dxl_id_[index], "Present_Velocity");
-
-  sensor_msgs::JointState dynamixel_;
-  dynamixel_.header.stamp = ros::Time::now();
-
-  for (int index = 0; index < dxl_cnt_; index++)
-  {
-    std::stringstream id_num;
-    id_num << "id_" << (int)(dxl_id_[index]);
-
-    dynamixel_.name.push_back(id_num.str());
-
-    dynamixel_.position.push_back(dxl_wb_->convertValue2Radian(dxl_id_[index], present_position[index]));
-    dynamixel_.velocity.push_back(dxl_wb_->convertValue2Velocity(dxl_id_[index], present_velocity[index]));
-  }
-  joint_states_pub_.publish(dynamixel_);
-}
-
 void PositionControl::controlLoop()
 {
-  dynamixelStatePublish();
-  jointStatePublish();
+  //dynamixelStatePublish();
 }
 
 bool PositionControl::jointCommandMsgCallback(dynamixel_workbench_msgs::JointCommand::Request &req,
@@ -168,24 +130,9 @@ bool PositionControl::jointCommandMsgCallback(dynamixel_workbench_msgs::JointCom
 
   bool ret = dxl_wb_->goalPosition(req.id, goal_position);
 
-  res.result = ret;
-}
+  //res.result = ret;
+  res.result = true;
 
-void PositionControl::goalJointPositionCallback(const sensor_msgs::JointState::ConstPtr &msg)
-{
-  double goal_position[dxl_cnt_] = {0.0, };
-
-  for (int index = 0; index < dxl_cnt_; index++)
-    goal_position[index] = msg->position.at(index);
-
-  int32_t goal_dxl_position[dxl_cnt_] = {0, };
-
-  for (int index = 0; index < dxl_cnt_; index++)
-  {
-    goal_dxl_position[index] = dxl_wb_->convertRadian2Value(dxl_id_[index], goal_position[index]);
-  }
-
-  dxl_wb_->syncWrite("Goal_Position", goal_dxl_position);
 }
 
 int main(int argc, char **argv)

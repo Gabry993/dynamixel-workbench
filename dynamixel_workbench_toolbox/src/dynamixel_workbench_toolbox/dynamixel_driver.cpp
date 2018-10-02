@@ -420,7 +420,7 @@ bool DynamixelDriver::writeRegister(uint8_t id, const char *item_name, int32_t d
   {
     dxl_comm_result = packetHandler_->write4ByteTxRx(portHandler_, id, cti->address, (uint32_t)data, &error);
   }
-
+  
   if (dxl_comm_result == COMM_SUCCESS)
   {
     if (error != 0)
@@ -436,6 +436,29 @@ bool DynamixelDriver::writeRegister(uint8_t id, const char *item_name, int32_t d
   return true;
 }
 
+bool DynamixelDriver::writeRegisterNoReply(uint8_t id, const char *item_name, int32_t data)
+{
+  ControlTableItem *cti;
+  cti = tools_[getToolsFactor(id)].getControlItem(item_name);
+
+  if (cti->data_length == BYTE)
+  {
+    packetHandler_->write1ByteTxOnly(portHandler_, id, cti->address, (uint8_t)data);
+    //dxl_comm_result = packetHandler_->write1ByteTxRx(portHandler_, id, cti->address, (uint8_t)data, &error);
+  }
+  else if (cti->data_length == WORD)
+  {
+    packetHandler_->write2ByteTxOnly(portHandler_, id, cti->address, (uint16_t)data);
+    //dxl_comm_result = packetHandler_->write2ByteTxRx(portHandler_, id, cti->address, (uint16_t)data, &error);
+  }
+  else if (cti->data_length == DWORD)
+  {
+    packetHandler_->write4ByteTxOnly(portHandler_, id, cti->address, (uint32_t)data);
+    //dxl_comm_result = packetHandler_->write4ByteTxRx(portHandler_, id, cti->address, (uint32_t)data, &error);
+  }
+
+  return true;
+}
 bool DynamixelDriver::readRegister(uint8_t id, const char *item_name, int32_t *data)
 {
   uint8_t error = 0;
@@ -479,28 +502,6 @@ bool DynamixelDriver::readRegister(uint8_t id, const char *item_name, int32_t *d
     else if (cti->data_length == DWORD)
     {
       *data = value_32_bit;
-    }
-
-    return true;
-  }
-  else
-  {
-    return false;
-  }
-}
-
-bool DynamixelDriver::readRegister(uint8_t id, uint16_t length, uint8_t *data)
-{
-  uint8_t error = 0;
-  int dxl_comm_result = COMM_RX_FAIL;
-
-  dxl_comm_result = packetHandler_->readTxRx(portHandler_, id, 0, length, data, &error);
-
-  if (dxl_comm_result == COMM_SUCCESS)
-  {
-    if (error != 0)
-    {
-      return false;
     }
 
     return true;

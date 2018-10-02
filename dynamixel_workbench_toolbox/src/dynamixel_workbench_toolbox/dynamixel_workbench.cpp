@@ -148,11 +148,6 @@ bool DynamixelWorkbench::setPacketHandler(float protocol_version)
   return driver_.setPacketHandler(protocol_version);
 }
 
-float DynamixelWorkbench::getProtocolVersion()
-{
-  return driver_.getProtocolVersion();
-}
-
 char* DynamixelWorkbench::getModelName(uint8_t id)
 {
   return driver_.getModelName(id);
@@ -285,9 +280,9 @@ bool DynamixelWorkbench::currentMode(uint8_t id, uint8_t cur)
 
 bool DynamixelWorkbench::goalPosition(uint8_t id, int32_t goal)
 {
-  bool comm_result = false;
+  bool comm_result = true;
   
-  comm_result = driver_.writeRegister(id, "Goal_Position", goal);
+  driver_.writeRegisterNoReply(id, "Goal_Position", goal);
 
   return comm_result;
 }

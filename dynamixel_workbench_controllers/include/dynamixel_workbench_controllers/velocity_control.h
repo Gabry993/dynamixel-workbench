@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 /*
  *
@@ -36,7 +36,6 @@
 #include <ros/ros.h>
 
 #include "message_header.h"
-#include <geometry_msgs/Twist.h>
 
 #include <dynamixel_workbench_toolbox/dynamixel_workbench.h>
 #include <dynamixel_workbench_msgs/DynamixelStateList.h>
@@ -54,7 +53,6 @@ class VelocityControl
   ros::Publisher dynamixel_state_list_pub_;
 
   // ROS Topic Subscriber
-  ros::Subscriber cmd_vel_sub_;
 
   // ROS Service Server
   ros::ServiceServer wheel_command_server_;
@@ -66,10 +64,6 @@ class VelocityControl
   uint8_t dxl_id_[2];
   uint8_t dxl_cnt_;
 
-  // Other Parameters
-  float wheel_separation_;
-  float wheel_radius_;
-
  public:
   VelocityControl();
   ~VelocityControl();
@@ -79,13 +73,11 @@ class VelocityControl
   void initMsg();
 
   void initPublisher();
-  void initSubscriber();
   void dynamixelStatePublish();
 
   void initServer();
   bool wheelCommandMsgCallback(dynamixel_workbench_msgs::WheelCommand::Request &req,
                                dynamixel_workbench_msgs::WheelCommand::Response &res);
-  void commandVelocityCallback(const geometry_msgs::Twist::ConstPtr &msg);
 };
 
 #endif //DYNAMIXEL_WORKBENCH_VELOCITY_CONTROL_H

@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #include <fcntl.h>          // FILE control
 #include <termios.h>        // Terminal IO

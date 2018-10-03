@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #ifndef DYNAMIXEL_WORKBENCH_MESSAGE_HEADER_H
 #define DYNAMIXEL_WORKBENCH_MESSAGE_HEADER_H
@@ -39,6 +39,5 @@
 #include "dynamixel_workbench_msgs/XH.h"
 
 #include "dynamixel_workbench_msgs/PRO.h"
-#include "dynamixel_workbench_msgs/PROExt.h"
 
 #endif //DYNAMIXEL_WORKBENCH_MESSAGE_HEADER_H

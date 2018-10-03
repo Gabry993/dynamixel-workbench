@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #include "dynamixel_workbench_single_manager/single_dynamixel_controller.h"
 

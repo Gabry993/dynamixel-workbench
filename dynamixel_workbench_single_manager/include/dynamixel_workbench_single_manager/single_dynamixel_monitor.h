@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #ifndef DYNAMIXEL_WORKBENCH_SINGLE_DYNAMIXEL_MONITOR_H
 #define DYNAMIXEL_WORKBENCH_SINGLE_DYNAMIXEL_MONITOR_H
@@ -94,7 +94,6 @@ class SingleDynamixelMonitor
   void XMExt(void);
   void XH(void);
   void PRO(void);
-  void PROExt(void);
 };
 }
 

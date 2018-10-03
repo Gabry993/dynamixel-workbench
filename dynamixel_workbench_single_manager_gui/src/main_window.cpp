@@ -14,8 +14,9 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
+#include <QtGui>
 #include <QMessageBox>
 #include <iostream>
 
@@ -42,10 +43,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
   InitUserInterface();
 }
 
-MainWindow::~MainWindow()
-{
-  timer_.stop();
-}
+MainWindow::~MainWindow() {}
 
 void MainWindow::showNoMasterMessage()
 {
@@ -215,19 +213,10 @@ void MainWindow::updateDynamixelInfoLineEdit(dynamixel_workbench_msgs::Dynamixel
   ui_.get_model_name_line_edit->setText(QString::fromStdString(dynamixel_info_->model_name));
 }
 
-void MainWindow::updateListView()
-{
-  qnode_.writeReceivedDynamixelData();
-}
-
 void MainWindow::InitConnect()
 {
   // Init log
   ui_.view_logging->setModel(qnode_.loggingModel());
-
-  // Init Timer
-  connect(&timer_, SIGNAL(timeout()), this, SLOT(updateListView()));
-  timer_.start(30);
 
   // Get Dynamixel Info
   qRegisterMetaType<dynamixel_workbench_msgs::DynamixelInfo>("dynamixel_workbench_msgs::DynamixelInfo");

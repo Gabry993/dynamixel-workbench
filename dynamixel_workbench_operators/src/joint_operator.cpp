@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #include <ros/ros.h>
 #include <dynamixel_workbench_msgs/JointCommand.h>

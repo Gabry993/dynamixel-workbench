@@ -12,39 +12,10 @@ add_compile_options(-std=c++11)
 ################################################################################
 find_package(catkin REQUIRED COMPONENTS
   roscpp
+  qt_build
   dynamixel_workbench_msgs
   dynamixel_workbench_toolbox
 )
-
-find_package(Qt5Widgets REQUIRED)
-
-set(${PROJECT_NAME}_SRCS
-  src/main.cpp
-  src/main_window.cpp
-  src/qnode.cpp
-)
-
-set(${PROJECT_NAME}_HDRS
-  include/${PROJECT_NAME}/main_window.hpp
-  include/${PROJECT_NAME}/message_header.h
-  include/${PROJECT_NAME}/qnode.hpp
-)
-
-set(${PROJECT_NAME}_UIS
-  ui/main_window.ui
-)
-
-set(${PROJECT_NAME}_RESOURCES
-  resources/images.qrc
-)
-
-set(${PROJECT_NAME}_INCLUDE_DIRECTORIES
-  "${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_INCLUDE_DESTINATION}/${PROJECT_NAME}"
-)
-
-if(NOT EXISTS ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
-  file(MAKE_DIRECTORY ${${PROJECT_NAME}_INCLUDE_DIRECTORIES})
-endif()
 
 ################################################################################
 # Setup for python modules and scripts
@@ -63,32 +34,31 @@ endif()
 ################################################################################
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS roscpp dynamixel_workbench_msgs dynamixel_workbench_toolbox
+  CATKIN_DEPENDS roscpp qt_build dynamixel_workbench_msgs dynamixel_workbench_toolbox
 )
-
-qt5_wrap_cpp(${PROJECT_NAME}_MOCS     ${${PROJECT_NAME}_HDRS})
-qt5_add_resources(${PROJECT_NAME}_RCC ${${PROJECT_NAME}_RESOURCES})
-
-# ensure generated header files are being created in the devel space
-set(_cmake_current_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
-set(CMAKE_CURRENT_BINARY_DIR ${dynamixel_workbench_single_manager_gui_INCLUDE_DIRECTORIES})
-
-qt5_wrap_ui(${PROJECT_NAME}_UIS_H ${${PROJECT_NAME}_UIS})
-
-set(CMAKE_CURRENT_BINARY_DIR "${_cmake_current_binary_dir}")
 
 ################################################################################
 # Build
 ################################################################################
 include_directories(
   include
-  ${dynamixel_workbench_single_manager_gui_INCLUDE_DIRECTORIES}
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(dynamixel_workbench_single_manager_gui ${dynamixel_workbench_single_manager_gui_SRCS} ${dynamixel_workbench_single_manager_gui_MOCS} ${dynamixel_workbench_single_manager_gui_UIS_H} ${dynamixel_workbench_single_manager_gui_RCC})
-add_dependencies(dynamixel_workbench_single_manager_gui ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(dynamixel_workbench_single_manager_gui Qt5::Widgets ${catkin_LIBRARIES})
+rosbuild_prepare_qt4(QtCore QtGui)
+
+file(GLOB_RECURSE QT_SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS src/*.cpp)
+file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/*.ui)
+file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resources/*.qrc)
+file(GLOB_RECURSE QT_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS include/dynamixel_workbench_single_manager_gui/*.hpp)
+
+QT4_ADD_RESOURCES(QT_RESOURCES_CPP ${QT_RESOURCES})
+QT4_WRAP_UI(QT_FORMS_HPP ${QT_FORMS})
+QT4_WRAP_CPP(QT_MOC_HPP ${QT_MOC})
+
+add_executable(dynamixel_workbench_single_manager_gui ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+add_dependencies(dynamixel_workbench_single_manager_gui ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dynamixel_workbench_single_manager_gui ${catkin_LIBRARIES} ${QT_LIBRARIES})
 
 #################################################################################
 ## Install

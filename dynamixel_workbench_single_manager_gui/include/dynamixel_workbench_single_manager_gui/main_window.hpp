@@ -14,15 +14,14 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #ifndef DYNAMIXEL_WORKBENCH_SINGLE_MANAGER_GUI_MAIN_WINDOW_H
 #define DYNAMIXEL_WORKBENCH_SINGLE_MANAGER_GUI_MAIN_WINDOW_H
 
 #ifndef Q_MOC_RUN
 
-#include <QMainWindow>
-#include <QTimer>
+#include <QtGui/QMainWindow>
 #include "ui_main_window.h"
 #include "qnode.hpp"
 
@@ -74,12 +73,10 @@ class MainWindow : public QMainWindow
   void setEachAddressFunction(QString index);
 
   void updateDynamixelInfoLineEdit(dynamixel_workbench_msgs::DynamixelInfo dynamixel_info);
-  void updateListView();
 
  private:
   Ui::MainWindowDesign ui_;
   qnode::QNode qnode_;
-  QTimer timer_;
 
   DynamixelInfo *dynamixel_info_;
   DynamixelTool *dynamixel_tool_;

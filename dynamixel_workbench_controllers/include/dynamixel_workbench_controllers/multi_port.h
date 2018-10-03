@@ -14,7 +14,7 @@
 * limitations under the License.
 *******************************************************************************/
 
-/* Authors: Taehun Lim (Darby) */
+/* Authors: Taehoon Lim (Darby) */
 
 #ifndef DYNAMIXEL_WORKBENCH_MULTI_PORT_H
 #define DYNAMIXEL_WORKBENCH_MULTI_PORT_H
